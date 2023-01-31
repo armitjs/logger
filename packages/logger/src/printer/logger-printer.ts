@@ -3,30 +3,30 @@ import { LogLevel } from '../constant/log-level.js';
 import type { LogAdapter, LogAdapterConfig } from '../core/adapter.js';
 import type { LogPrinter } from './printer.js';
 
-export class LoggerPrinter implements LogPrinter {
-  private logAdapters: LogAdapter[] = [];
+export class LoggerPrinter<T> implements LogPrinter<T> {
+  private logAdapters: LogAdapter<T>[] = [];
 
-  error(message: string, context?: string, trace?: string): void {
+  error(message: T, context?: string, trace?): void {
     this.print(LogLevel.Error, message, context, trace);
   }
 
-  warn(message: string, context?: string): void {
+  warn(message: T, context?: string): void {
     this.print(LogLevel.Warn, message, context);
   }
 
-  info(message: string, context?: string): void {
+  info(message: T, context?: string): void {
     this.print(LogLevel.Info, message, context);
   }
 
-  verbose(message: string, context?: string): void {
+  verbose(message: T, context?: string): void {
     this.print(LogLevel.Verbose, message, context);
   }
 
-  debug(message: string, context?: string): void {
+  debug(message: T, context?: string): void {
     this.print(LogLevel.Debug, message, context);
   }
 
-  addAdapter(adapter: LogAdapter, config?: LogAdapterConfig | undefined) {
+  addAdapter(adapter: LogAdapter<T>, config?: LogAdapterConfig<T> | undefined) {
     this.logAdapters.push(adapter.config(config));
     return this;
   }
@@ -36,9 +36,9 @@ export class LoggerPrinter implements LogPrinter {
     return this;
   }
 
-  private print(priority: LogLevel, message: string, context?: string, trace?) {
+  private print(priority: LogLevel, message: T, context?: string, trace?) {
     if (!message) {
-      message = 'Empty/NULL log message';
+      message = 'Empty/NULL log message' as T;
     }
 
     if (!context) {
@@ -53,7 +53,7 @@ export class LoggerPrinter implements LogPrinter {
       const adapter = this.logAdapters[index];
       const loggable = adapter.isLoggable(priority, context);
       if (loggable) {
-        adapter.log(priority, context, message, trace);
+        adapter.print(priority, context, message, trace);
       }
     }
   }

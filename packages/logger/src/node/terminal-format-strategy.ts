@@ -1,16 +1,15 @@
 import { LogLevel } from '../constant/log-level.js';
-import type { LogAdapterConfig } from '../core/adapter.js';
 import type { FormatStrategy } from '../core/format-strategy.js';
 import { advancedLevels, TerminalLog } from '../terminal/terminal-log.js';
 
-export class TerminalFormatStrategy implements FormatStrategy {
+export class TerminalFormatStrategy<T> implements FormatStrategy<T> {
   private terminal = new TerminalLog({
     levels: advancedLevels,
     showLevelName: true,
     noColor: false,
   });
 
-  constructor(options?: Pick<LogAdapterConfig, 'logLevel' | 'noColor'>) {
+  constructor(options?: { noColor?: boolean }) {
     if (options?.noColor) {
       this.terminal = new TerminalLog({
         levels: advancedLevels,
@@ -20,7 +19,7 @@ export class TerminalFormatStrategy implements FormatStrategy {
     }
   }
 
-  print(priority: LogLevel, context: string, message: string, trace?): void {
+  print(priority: LogLevel, context: string, message: T, trace?): void {
     switch (priority) {
       case LogLevel.Debug:
         this.terminal.log.debug(this.ensureString(message), context);
@@ -40,7 +39,7 @@ export class TerminalFormatStrategy implements FormatStrategy {
     }
   }
 
-  private ensureString(message: string | object | unknown[]): string {
+  private ensureString(message): string {
     return typeof message === 'string'
       ? message
       : message instanceof Error

@@ -3,8 +3,8 @@ import { LoggerPrinter } from '../printer/logger-printer.js';
 import type { LogPrinter } from '../printer/printer.js';
 import type { LogAdapter, LogAdapterConfig } from './adapter.js';
 
-export type LoggerOptions = LogAdapterConfig & {
-  adapter?: LogAdapter;
+export type LoggerOptions<T> = LogAdapterConfig<T> & {
+  adapter?: LogAdapter<T>;
   context?: string;
 };
 
@@ -20,23 +20,26 @@ export type LoggerOptions = LogAdapterConfig & {
  * export const logger =  new Logger({ logLevel: LogLevel.Debug }),
  * ```
  */
-export class Logger {
-  private printer: LogPrinter = new LoggerPrinter();
+export class Logger<T> {
+  private printer: LogPrinter<T> = new LoggerPrinter<T>();
   private context = DEFAULT_CONTEXT;
 
-  constructor(options?: LoggerOptions) {
+  constructor(options?: LoggerOptions<T>) {
     this.context = options?.context || DEFAULT_CONTEXT;
     if (options?.adapter) {
       this.addLogAdapter(options.adapter, options);
     }
   }
 
-  usePrinter(printer: LogPrinter) {
+  usePrinter(printer: LogPrinter<T>) {
     this.printer = printer;
     return this;
   }
 
-  addLogAdapter(adapter: LogAdapter, config?: LogAdapterConfig | undefined) {
+  addLogAdapter(
+    adapter: LogAdapter<T>,
+    config?: LogAdapterConfig<T> | undefined
+  ) {
     this.printer.addAdapter(adapter, config);
     return this;
   }
@@ -46,23 +49,23 @@ export class Logger {
     return this;
   }
 
-  error(message: string | object, context?: string, trace?): void {
+  error(message: T, context?: string, trace?): void {
     this.printer.error(message, this.logContext(context), trace);
   }
 
-  warn(message: string | object, context?: string): void {
+  warn(message: T, context?: string): void {
     this.printer.warn(message, this.logContext(context));
   }
 
-  info(message: string | object, context?: string): void {
+  info(message: T, context?: string): void {
     this.printer.info(message, this.logContext(context));
   }
 
-  verbose(message: string | object, context?: string): void {
+  verbose(message: T, context?: string): void {
     this.printer.verbose(message, this.logContext(context));
   }
 
-  debug(message: string | object, context?: string): void {
+  debug(message: T, context?: string): void {
     this.printer.debug(message, this.logContext(context));
   }
 

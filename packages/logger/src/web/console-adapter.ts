@@ -3,29 +3,29 @@ import type { LogAdapter, LogAdapterConfig } from '../core/adapter.js';
 import type { FormatStrategy } from '../core/format-strategy.js';
 import { ConsoleFormatStrategy } from './console-format-strategy.js';
 
-export class ConsoleAdapter implements LogAdapter {
-  private formatStrategy: FormatStrategy = new ConsoleFormatStrategy();
+export class ConsoleAdapter<T> implements LogAdapter<T> {
+  private formatStrategy: FormatStrategy<T> = new ConsoleFormatStrategy<T>();
   private level = LogLevel.Info;
 
-  constructor(options?: LogAdapterConfig) {
+  constructor(options?: LogAdapterConfig<T>) {
     this.config(options);
   }
 
-  config(config?: LogAdapterConfig): LogAdapter {
+  config(config?: LogAdapterConfig<T>): LogAdapter<T> {
     if (config?.formatStrategy) {
       this.formatStrategy = config?.formatStrategy;
     }
     if (config?.logLevel) {
       this.level = config?.logLevel || this.level;
     }
-    return this;
+    return this as LogAdapter<T>;
   }
 
   isLoggable(priority: LogLevel, context?: string): boolean {
     return this.level >= priority;
   }
 
-  log(priority: LogLevel, context: string, message: string, trace?): void {
+  print(priority: LogLevel, context: string, message: T, trace?): void {
     this.formatStrategy.print(priority, context, message, trace);
   }
 }
