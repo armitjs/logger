@@ -5,6 +5,11 @@ import type { LogLevel } from '../constant/log-level.js';
  *
  * @see PrettyFormatStrategy
  */
-export interface FormatStrategy<T> {
-  print(priority: LogLevel, context: string, message: T, trace?): void;
+export interface FormatStrategy<MessageType> {
+  print(
+    priority: LogLevel,
+    context: string,
+    message: MessageType,
+    trace?
+  ): void;
 }

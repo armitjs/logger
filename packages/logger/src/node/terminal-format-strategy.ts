@@ -2,7 +2,9 @@ import { LogLevel } from '../constant/log-level.js';
 import type { FormatStrategy } from '../core/format-strategy.js';
 import { advancedLevels, TerminalLog } from '../terminal/terminal-log.js';
 
-export class TerminalFormatStrategy<T> implements FormatStrategy<T> {
+export class TerminalFormatStrategy<MessageType>
+  implements FormatStrategy<MessageType>
+{
   private terminal = new TerminalLog({
     levels: advancedLevels,
     showLevelName: true,
@@ -19,7 +21,12 @@ export class TerminalFormatStrategy<T> implements FormatStrategy<T> {
     }
   }
 
-  print(priority: LogLevel, context: string, message: T, trace?): void {
+  print(
+    priority: LogLevel,
+    context: string,
+    message: MessageType,
+    trace?
+  ): void {
     switch (priority) {
       case LogLevel.Debug:
         this.terminal.log.debug(this.ensureString(message), context);

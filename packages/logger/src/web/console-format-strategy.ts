@@ -2,7 +2,9 @@ import { DEFAULT_CONTEXT } from '../constant/default-context.js';
 import { LogLevel } from '../constant/log-level.js';
 import type { FormatStrategy } from '../core/format-strategy.js';
 
-export class ConsoleFormatStrategy<T> implements FormatStrategy<T> {
+export class ConsoleFormatStrategy<MessageType>
+  implements FormatStrategy<MessageType>
+{
   private readonly localeStringOptions = {
     year: '2-digit',
     hour: 'numeric',
@@ -11,7 +13,12 @@ export class ConsoleFormatStrategy<T> implements FormatStrategy<T> {
     month: 'numeric',
   } as const;
 
-  print(priority: LogLevel, context: string, message: T, trace): void {
+  print(
+    priority: LogLevel,
+    context: string,
+    message: MessageType,
+    trace
+  ): void {
     this.logMessage(priority, this.ensureString(message), context, trace);
   }
 

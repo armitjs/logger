@@ -3,30 +3,33 @@ import { LogLevel } from '../constant/log-level.js';
 import type { LogAdapter, LogAdapterConfig } from '../core/adapter.js';
 import type { LogPrinter } from './printer.js';
 
-export class LoggerPrinter<T> implements LogPrinter<T> {
-  private logAdapters: LogAdapter<T>[] = [];
+export class LoggerPrinter<MessageType> implements LogPrinter<MessageType> {
+  private logAdapters: LogAdapter<MessageType>[] = [];
 
-  error(message: T, context?: string, trace?): void {
+  error(message: MessageType, context?: string, trace?): void {
     this.print(LogLevel.Error, message, context, trace);
   }
 
-  warn(message: T, context?: string): void {
+  warn(message: MessageType, context?: string): void {
     this.print(LogLevel.Warn, message, context);
   }
 
-  info(message: T, context?: string): void {
+  info(message: MessageType, context?: string): void {
     this.print(LogLevel.Info, message, context);
   }
 
-  verbose(message: T, context?: string): void {
+  verbose(message: MessageType, context?: string): void {
     this.print(LogLevel.Verbose, message, context);
   }
 
-  debug(message: T, context?: string): void {
+  debug(message: MessageType, context?: string): void {
     this.print(LogLevel.Debug, message, context);
   }
 
-  addAdapter(adapter: LogAdapter<T>, config?: LogAdapterConfig<T> | undefined) {
+  addAdapter(
+    adapter: LogAdapter<MessageType>,
+    config?: LogAdapterConfig<MessageType> | undefined
+  ) {
     this.logAdapters.push(adapter.config(config));
     return this;
   }
@@ -36,9 +39,14 @@ export class LoggerPrinter<T> implements LogPrinter<T> {
     return this;
   }
 
-  private print(priority: LogLevel, message: T, context?: string, trace?) {
+  private print(
+    priority: LogLevel,
+    message: MessageType,
+    context?: string,
+    trace?
+  ) {
     if (!message) {
-      message = 'Empty/NULL log message' as T;
+      message = 'Empty/NULL log message' as MessageType;
     }
 
     if (!context) {

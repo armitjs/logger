@@ -1,8 +1,8 @@
 import type { LogLevel } from '../constant/log-level.js';
 import type { FormatStrategy } from './format-strategy.js';
 
-export type LogAdapterConfig<T> = {
-  formatStrategy?: FormatStrategy<T>;
+export type LogAdapterConfig<MessageType> = {
+  formatStrategy?: FormatStrategy<MessageType>;
   logLevel?: LogLevel;
 };
 /**
@@ -10,7 +10,7 @@ export type LogAdapterConfig<T> = {
  *
  * @see ConsoleAdapter
  */
-export interface LogAdapter<T> {
+export interface LogAdapter<MessageType> {
   /**
    * Used to determine whether log should be printed out or not.
    *
@@ -27,7 +27,7 @@ export interface LogAdapter<T> {
    *
    * @param config is the adapter normalized config options.
    */
-  config(config?: LogAdapterConfig<T>): LogAdapter<T>;
+  config(config?: LogAdapterConfig<MessageType>): LogAdapter<MessageType>;
 
   /**
    * Each log will use this pipeline
@@ -37,5 +37,10 @@ export interface LogAdapter<T> {
    * @param message is the given message for the log message.
    * @param trace trace full stack trace).
    */
-  print(priority: LogLevel, context: string, message: T, trace?): void;
+  print(
+    priority: LogLevel,
+    context: string,
+    message: MessageType,
+    trace?
+  ): void;
 }

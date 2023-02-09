@@ -3,10 +3,15 @@ import { LoggerPrinter } from '../printer/logger-printer.js';
 import type { LogPrinter } from '../printer/printer.js';
 import type { LogAdapter, LogAdapterConfig } from './adapter.js';
 
-export type LoggerOptions<T> = LogAdapterConfig<T> & {
-  adapter?: LogAdapter<T>;
+export type LoggerOptions<
+  MessageType,
+  OptionExtendType extends Record<string, unknown> = {
+    /** */
+  }
+> = LogAdapterConfig<MessageType> & {
+  adapter?: LogAdapter<MessageType>;
   context?: string;
-};
+} & OptionExtendType;
 
 /**
  * The default logger, which logs to the console (stdout) with optional timestamps. Since this logger is part of the
@@ -20,25 +25,30 @@ export type LoggerOptions<T> = LogAdapterConfig<T> & {
  * export const logger =  new Logger({ logLevel: LogLevel.Debug }),
  * ```
  */
-export class Logger<T> {
-  private printer: LogPrinter<T> = new LoggerPrinter<T>();
+export class Logger<
+  MessageType,
+  OptionExtendType extends Record<string, unknown> = {
+    /** */
+  }
+> {
+  private printer: LogPrinter<MessageType> = new LoggerPrinter<MessageType>();
   private context = DEFAULT_CONTEXT;
 
-  constructor(options?: LoggerOptions<T>) {
+  constructor(options?: LoggerOptions<MessageType, OptionExtendType>) {
     this.context = options?.context || DEFAULT_CONTEXT;
     if (options?.adapter) {
       this.addLogAdapter(options.adapter, options);
     }
   }
 
-  usePrinter(printer: LogPrinter<T>) {
+  usePrinter(printer: LogPrinter<MessageType>) {
     this.printer = printer;
     return this;
   }
 
   addLogAdapter(
-    adapter: LogAdapter<T>,
-    config?: LogAdapterConfig<T> | undefined
+    adapter: LogAdapter<MessageType>,
+    config?: LogAdapterConfig<MessageType> | undefined
   ) {
     this.printer.addAdapter(adapter, config);
     return this;
@@ -49,23 +59,23 @@ export class Logger<T> {
     return this;
   }
 
-  error(message: T, context?: string, trace?): void {
+  error(message: MessageType, context?: string, trace?): void {
     this.printer.error(message, this.logContext(context), trace);
   }
 
-  warn(message: T, context?: string): void {
+  warn(message: MessageType, context?: string): void {
     this.printer.warn(message, this.logContext(context));
   }
 
-  info(message: T, context?: string): void {
+  info(message: MessageType, context?: string): void {
     this.printer.info(message, this.logContext(context));
   }
 
-  verbose(message: T, context?: string): void {
+  verbose(message: MessageType, context?: string): void {
     this.printer.verbose(message, this.logContext(context));
   }
 
-  debug(message: T, context?: string): void {
+  debug(message: MessageType, context?: string): void {
     this.printer.debug(message, this.logContext(context));
   }
 
