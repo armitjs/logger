@@ -1,5 +1,11 @@
 # @armit/logger
 
+## 0.0.16
+
+### Patch Changes
+
+- [`ce614a7`](https://github.com/armitjs/logger/commit/ce614a71367f261bc0e3cd2c29ede9900cd5327a) Thanks [@tianyingchun](https://github.com/tianyingchun)! - Refactor typings to support generic message & logger options
+
 ## 0.0.15
 
 ### Patch Changes
