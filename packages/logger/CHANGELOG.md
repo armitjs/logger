@@ -1,5 +1,11 @@
 # @armit/logger
 
+## 0.0.17
+
+### Patch Changes
+
+- [`19407f7`](https://github.com/armitjs/logger/commit/19407f70417b19049d2e483bc8a4f5195b63d8a5) Thanks [@tianyingchun](https://github.com/tianyingchun)! - Update deps, move logLevel from Verbose down to Debug
+
 ## 0.0.16
 
 ### Patch Changes
