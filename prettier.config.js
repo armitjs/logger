@@ -1,4 +1,3 @@
-// @ts-ignore
 const { getPrettierConfig } = require('@armit/eslint-config-bases/helpers');
 
 const { overrides = [], ...prettierConfig } = getPrettierConfig();
